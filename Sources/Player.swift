@@ -307,6 +307,7 @@ public class Player: UIViewController {
         self.avplayer.pause()
         self.playbackState = .stopped
         self.delegate?.playerPlaybackDidEnd?(self)
+        self.setupPlayerItem(nil)
     }
     
     public func seekToTime(_ time: CMTime) {
