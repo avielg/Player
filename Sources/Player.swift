@@ -266,7 +266,7 @@ public class Player: UIViewController {
 
         self.avplayer.addObserver(self, forKeyPath: PlayerRateKey, options: ([.new, .old]) , context: &PlayerObserverContext)
 
-        self.addApplicationObservers();
+        //self.addApplicationObservers();
     }
 
     public override func viewDidDisappear(_ animated: Bool) {
@@ -314,6 +314,16 @@ public class Player: UIViewController {
         if let playerItem = self.playerItem {
             return playerItem.seek(to: time)
         }
+    }
+    
+    public func addApplicationObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive(_:)), name: NSNotification.Name.UIApplicationWillResignActive, object: UIApplication.shared)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: UIApplication.shared)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared)
+    }
+
+    internal func removeApplicationObservers() {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - private
@@ -420,15 +430,6 @@ extension Player {
     
     // UIApplication
     
-    internal func addApplicationObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive(_:)), name: NSNotification.Name.UIApplicationWillResignActive, object: UIApplication.shared)
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidEnterBackground(_:)), name: NSNotification.Name.UIApplicationDidEnterBackground, object: UIApplication.shared)
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground(_:)), name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared)
-    }
-    
-    internal func removeApplicationObservers() {
-    }
-
     internal func applicationWillResignActive(_ aNotification: Notification) {
         if self.playbackState == .playing {
             self.pause()
